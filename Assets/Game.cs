@@ -116,10 +116,31 @@ public class Game : MonoBehaviour {
 		//	move each player
 		var map = GameObject.FindObjectOfType<Map>();
 
-		foreach ( var player in Players )
+		//foreach ( var player in Players )
+		for ( int p=0;	p<Players.Count;	p++ )
 		{
+			var player = Players[p];
+
 			if ( player.Alive )
 			{
+				var OldPos = player.xy;
+				var NewPos = player.xy;
+				NewPos.x += PopperMan.GetDelta(player.Direction).x;
+				NewPos.y += PopperMan.GetDelta(player.Direction).y;
+
+				//	check for crash
+				bool Crash = false;
+
+				if ( Crash )
+				{
+
+				}
+				else
+				{
+					//	burn old pos to map
+					map[OldPos] = PopperMan.GetPlayerTile(p);
+					player.xy = NewPos;
+				}
 				//	get forward pos
 				//	did we crash into map
 				//	did we crash into a player body

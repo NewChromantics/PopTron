@@ -14,6 +14,7 @@ public class Player : MonoBehaviour {
 	public string	JoystickAxisName = "Joystick 1 Horizontal";
 
 	public PopperMan.Direction	Direction = PopperMan.Direction.Up;
+	public PopperMan.Direction	TickStart_Direction = PopperMan.Direction.Up;
 
 	[Range(0,40)]
 	public int		x = 1;
@@ -27,6 +28,11 @@ public class Player : MonoBehaviour {
 		{
 			return new int2(x,y);
 		}
+		set
+		{
+			x = value.x;
+			y = value.y;
+		}
 	}
 
 
@@ -39,6 +45,7 @@ public class Player : MonoBehaviour {
 
 	public void ClearInput()
 	{
+		TickStart_Direction = Direction;
 		/*
 		//	work out if we let-go in a frame
 		Input_Direction = PopperMan.Direction.None;
@@ -61,38 +68,19 @@ public class Player : MonoBehaviour {
 		var Reading = Input.GetAxisRaw(JoystickAxisName);
 		if ( Reading < 0 )
 		{
-			if ( Direction == PopperMan.Direction.Up )			Direction = PopperMan.Direction.Left;
-			else if ( Direction == PopperMan.Direction.Left )	Direction = PopperMan.Direction.Down;
-			else if ( Direction == PopperMan.Direction.Down )	Direction = PopperMan.Direction.Right;
-			else if ( Direction == PopperMan.Direction.Right )	Direction = PopperMan.Direction.Up;
+			if ( TickStart_Direction == PopperMan.Direction.Up )			Direction = PopperMan.Direction.Left;
+			else if ( TickStart_Direction == PopperMan.Direction.Left )	Direction = PopperMan.Direction.Down;
+			else if ( TickStart_Direction == PopperMan.Direction.Down )	Direction = PopperMan.Direction.Right;
+			else if ( TickStart_Direction == PopperMan.Direction.Right )	Direction = PopperMan.Direction.Up;
 		}
 		else if ( Reading > 0 )
 		{
-			if ( Direction == PopperMan.Direction.Up )			Direction = PopperMan.Direction.Right;
-			else if ( Direction == PopperMan.Direction.Left )	Direction = PopperMan.Direction.Up;
-			else if ( Direction == PopperMan.Direction.Down )	Direction = PopperMan.Direction.Left;
-			else if ( Direction == PopperMan.Direction.Right )	Direction = PopperMan.Direction.Down;
+			if ( TickStart_Direction == PopperMan.Direction.Up )			Direction = PopperMan.Direction.Right;
+			else if ( TickStart_Direction == PopperMan.Direction.Left )	Direction = PopperMan.Direction.Up;
+			else if ( TickStart_Direction == PopperMan.Direction.Down )	Direction = PopperMan.Direction.Left;
+			else if ( TickStart_Direction == PopperMan.Direction.Right )	Direction = PopperMan.Direction.Down;
 		}
 
-	}
-
-	public void Move(System.Func<int2,bool,Player,bool> CanMoveTo)
-	{
-		/*
-		if ( Input_Direction == PopperMan.Direction.None )
-			return;
-
-		var NewPos = PopperMan.Move( new int2(x,y), Input_Direction );
-		if ( !CanMoveTo( NewPos, this.Alive, this ) )
-		{
-			OnBump.Invoke();
-			return;
-		}
-
-		x = NewPos.x;
-		y = NewPos.y;
-		OnPlayerMoved.Invoke();
-		*/
 	}
 
 	

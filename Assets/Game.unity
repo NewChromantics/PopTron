@@ -1102,6 +1102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   JoystickAxisName: joystick 4 horizontal
   Direction: 0
+  TickStart_Direction: 0
   x: 5
   y: 21
   Alive: 1
@@ -1512,7 +1513,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _Tick: 0
-  TicksPerSec: 5
+  TicksPerSec: 3
   _Players:
   - {fileID: 1873981777}
   - {fileID: 1819211235}
@@ -1699,6 +1700,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   JoystickAxisName: joystick 3 horizontal
   Direction: 2
+  TickStart_Direction: 0
   x: 33
   y: 21
   Alive: 1
@@ -1744,6 +1746,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   JoystickAxisName: joystick 2 horizontal
   Direction: 1
+  TickStart_Direction: 0
   x: 33
   y: 4
   Alive: 1
@@ -2007,6 +2010,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   JoystickAxisName: joystick 1 horizontal
   Direction: 3
+  TickStart_Direction: 0
   x: 5
   y: 4
   Alive: 1

@@ -7,10 +7,10 @@ using UnityEngine.Events;
 
 public class Map : MonoBehaviour {
 			
-	[Range(3,50)]
+	[Range(3,400)]
 	public int		Width = 10;
 
-	[Range(3,50)]
+	[Range(3,400)]
 	public int		Height = 10;
 
 	[InspectorButton("ResetMap")]
@@ -109,6 +109,24 @@ public class Map : MonoBehaviour {
 		char Char = '0';
 		Char += (char)Tile;
 		return Char;
+	}
+
+	public void ForEachTile(System.Action<PopperMan.Tile,int2> Enum)
+	{
+		var xy = new int2 (0, 0);
+		int i = 0;
+		foreach ( var TileChar in TilesAsNumbers )
+		{
+			if ( TileChar < '0' || TileChar > '9' )
+				continue;
+
+			var TileValue = (int)TileChar - '0';
+			var Tile = (PopperMan.Tile)TileValue;
+			xy.x = i % Width;
+			xy.y = i / Width;
+			Enum.Invoke (Tile, xy);
+			i++;
+		}
 	}
 
 	public void ResetMap()

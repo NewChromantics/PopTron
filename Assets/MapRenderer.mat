@@ -16,9 +16,21 @@ Material:
     serializedVersion: 2
     m_TexEnvs:
     - first:
+        name: GameTiles
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
         name: IdentTexture
       second:
         m_Texture: {fileID: 2800000, guid: 44b972ebcdc2e024cacfb528daa233fa, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
+        name: MapTiles
+      second:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
@@ -51,7 +63,7 @@ Material:
       second: 0.48
     - first:
         name: Height
-      second: 26
+      second: 50
     - first:
         name: IdentDropShadowOffset
       second: 0.0536
@@ -60,7 +72,7 @@ Material:
       second: 0.821
     - first:
         name: Width
-      second: 39
+      second: 50
     m_Colors:
     - first:
         name: FloorColourAdd

@@ -5,13 +5,16 @@
 		FrameDelta("FrameDelta", Range(0,1) ) = 0
 		Width("Width",Range(1,100) ) = 20
 		Height("Height",Range(1,100) ) = 20
-		
+
 		TileColour_Floor("TileColour_Floor",COLOR) = (0,0,0,1)
 		TileColour_Wall("TileColour_Wall",COLOR) = (1,1,1,1)
 		TileColour_Player0("TileColour_Player0",COLOR) = (1,0,0,1)
 		TileColour_Player1("TileColour_Player1",COLOR) = (0,1,1,1)
 		TileColour_Player2("TileColour_Player2",COLOR) = (1,1,0,1)
 		TileColour_Player3("TileColour_Player3",COLOR) = (1,0,1,1)
+
+		MapTiles("MapTiles", 2D ) = "black"
+		GameTiles("GameTiles", 2D ) = "black"
 	}
 	SubShader
 	{
@@ -57,8 +60,6 @@
 			float4 TileColour_Player2;
 			float4 TileColour_Player3;
 
-		#define MAX_WIDTH	39
-		#define MAX_HEIGHT	26
 			int Width;
 			int Height;
 			float FrameDelta;
@@ -73,9 +74,10 @@
 		#define DIR_DEAD	4
 			float PlayerDirs[MAX_PLAYERS];
 
-			//	gr: on OSX int Tiles[] renders everything as 0 or <invalid>
-			float MapTiles[MAX_WIDTH*MAX_HEIGHT];
-			float GameTiles[MAX_WIDTH*MAX_HEIGHT];
+			sampler2D MapTiles;
+			float4 MapTiles_TexelSize;
+			sampler2D GameTiles;
+			float4 GameTiles_TexelSize;
 
 			
 			v2f vert (appdata v)
@@ -175,6 +177,18 @@
 				return Rgb;
 			}
 
+			int GetMapTile(int x,int y)
+			{
+				float2 TileUv = float2(x,y) * MapTiles_TexelSize.xy;
+				return tex2D( MapTiles, TileUv ).x * 255.0f;
+			}
+
+			int GetGameTile(int x,int y)
+			{
+				float2 TileUv = float2(x,y) * GameTiles_TexelSize.xy;
+				return tex2D( GameTiles, TileUv ).x * 255.0f;
+			}
+
 			fixed4 frag (v2f Frag) : SV_Target
 			{
 				float2 uv = Frag.uv * float2(Width,Height);
@@ -182,9 +196,12 @@
 				int y = floor( uv.y );
 				uv = frac(uv);
 				int i = x + (y*Width);
-				
-				float4 MapColour = GetMapTileColour( int2(x,y), uv, MapTiles[i] );
-				float4 GameColour = GetGameTileColour( int2(x,y), uv, GameTiles[i] );
+
+				int MapTile = GetMapTile( x, y );
+				int GameTile = GetGameTile( x, y );
+
+				float4 MapColour = GetMapTileColour( int2(x,y), uv, MapTile );
+				float4 GameColour = GetGameTileColour( int2(x,y), uv, GameTile );
 				float4 Colour = lerp( MapColour, GameColour, GameColour.w );
 
 				//	debug framedelta

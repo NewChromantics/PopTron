@@ -130,6 +130,9 @@ public class Game : MonoBehaviour {
 
 				//	check for crash
 				bool Crash = false;
+				var MapTile = map [NewPos];
+				if (MapTile != PopperMan.Tile.Floor)
+					Crash = true;
 
 				if ( Crash )
 				{

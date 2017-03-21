@@ -12,6 +12,8 @@ public class UnityEvent_String : UnityEngine.Events.UnityEvent <string> {}
 public class Player : MonoBehaviour {
 
 	public string	JoystickAxisName = "Joystick 1 Horizontal";
+	public KeyCode	LeftKey = KeyCode.Q;
+	public KeyCode	RightKey = KeyCode.W;
 
 	public PopperMan.Direction	Direction = PopperMan.Direction.Up;
 	public PopperMan.Direction	TickStart_Direction = PopperMan.Direction.Up;
@@ -66,14 +68,14 @@ public class Player : MonoBehaviour {
 	{
 		//	we OR the inputs, as they're only used on a tick, we store it until
 		var Reading = Input.GetAxisRaw(JoystickAxisName);
-		if ( Reading < 0 )
+		if ( Reading < 0 || Input.GetKey(LeftKey) )
 		{
 			if ( TickStart_Direction == PopperMan.Direction.Up )			Direction = PopperMan.Direction.Left;
 			else if ( TickStart_Direction == PopperMan.Direction.Left )	Direction = PopperMan.Direction.Down;
 			else if ( TickStart_Direction == PopperMan.Direction.Down )	Direction = PopperMan.Direction.Right;
 			else if ( TickStart_Direction == PopperMan.Direction.Right )	Direction = PopperMan.Direction.Up;
 		}
-		else if ( Reading > 0 )
+		else if ( Reading > 0 || Input.GetKey(RightKey) )
 		{
 			if ( TickStart_Direction == PopperMan.Direction.Up )			Direction = PopperMan.Direction.Right;
 			else if ( TickStart_Direction == PopperMan.Direction.Left )	Direction = PopperMan.Direction.Up;

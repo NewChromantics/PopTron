@@ -1164,7 +1164,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee7e7a231c9673645804d48aa0ae95cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  JoystickAxisName: joystick 4 horizontal
+  JoystickAxisName_Windows: joystick 4 Horizontal
+  JoystickAxisName_Osx: joystick 1 axis 3
   LeftKey: 117
   RightKey: 105
   Direction: 0
@@ -1814,7 +1815,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee7e7a231c9673645804d48aa0ae95cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  JoystickAxisName: joystick 3 horizontal
+  JoystickAxisName_Windows: joystick 3 Horizontal
+  JoystickAxisName_Osx: joystick 1 axis 2
   LeftKey: 116
   RightKey: 121
   Direction: 2
@@ -1862,7 +1864,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee7e7a231c9673645804d48aa0ae95cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  JoystickAxisName: joystick 2 horizontal
+  JoystickAxisName_Windows: joystick 2 Horizontal
+  JoystickAxisName_Osx: joystick 1 axis 1
   LeftKey: 101
   RightKey: 114
   Direction: 1
@@ -2128,7 +2131,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee7e7a231c9673645804d48aa0ae95cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  JoystickAxisName: joystick 1 horizontal
+  JoystickAxisName_Windows: joystick 1 Horizontal
+  JoystickAxisName_Osx: joystick 1 axis 0
   LeftKey: 113
   RightKey: 119
   Direction: 3

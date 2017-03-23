@@ -11,7 +11,8 @@ public class UnityEvent_String : UnityEngine.Events.UnityEvent <string> {}
 [ExecuteInEditMode]
 public class Player : MonoBehaviour {
 
-	public string	JoystickAxisName = "Joystick 1 Horizontal";
+	public string	JoystickAxisName_Windows = "Joystick 1 Horizontal";
+	public string	JoystickAxisName_Osx = "Joystick 1 Horizontal";
 	public KeyCode	LeftKey = KeyCode.Q;
 	public KeyCode	RightKey = KeyCode.W;
 
@@ -39,6 +40,18 @@ public class Player : MonoBehaviour {
 
 
 	public bool		Alive = false;
+
+	public string	JoystickAxisName
+	{
+		get
+		{
+			#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+			return JoystickAxisName_Osx;
+			#else
+			return JoystickAxisName_Windows;
+			#endif
+		}
+	}
 
 
 

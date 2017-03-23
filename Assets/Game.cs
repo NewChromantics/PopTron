@@ -116,41 +116,93 @@ public class Game : MonoBehaviour {
 		//	move each player
 		var map = GameObject.FindObjectOfType<Map>();
 
-		//foreach ( var player in Players )
+		//	pre-calc all player new-head positions for head-head collision
+		var OldPlayerHeads = new int2[Players.Count];
+		var NewPlayerHeads = new int2[Players.Count];
+		for (int p = 0;	p < Players.Count;	p++) {
+			var player = Players[p];
+			var NewPos = player.xy;
+			NewPos.x += PopperMan.GetDelta(player.Direction).x;
+			NewPos.y += PopperMan.GetDelta(player.Direction).y;
+			OldPlayerHeads [p] = player.xy;
+			NewPlayerHeads [p] = NewPos;
+		}
+
+		//	find map crashes
+		var MapCollision = new bool[Players.Count];
+		for (int p = 0;	p < Players.Count;	p++) {
+			var MapTile = map [NewPlayerHeads[p]];
+			var Crash = (MapTile != PopperMan.Tile.Floor);
+			MapCollision[p] = Crash;
+
+			//	the current/last frame head hasn't been written to the map, but we still need to collide with it
+			for (int q = 0;	q < Players.Count;	q++) {
+				if (p == q)
+					continue;
+				if (NewPlayerHeads [p] == OldPlayerHeads [q])
+					MapCollision [p] = true;
+			}
+		}
+
+		//	find head-head coliisoins
+		var HeadCollision = new bool[Players.Count];
+
+
+		for (int p = 0;	p < Players.Count;	p++) {
+			for (int q = p + 1;	q < Players.Count;	q++) {
+				if (!Players [p].Alive)
+					continue;
+				if (!Players [q].Alive)
+					continue;
+				var Collision = NewPlayerHeads [p] == NewPlayerHeads [q];
+				if (Collision)
+					Debug.Log ("Collision between " + p + " and " + q);
+				HeadCollision[p] |= Collision;
+				HeadCollision[q] |= Collision;
+			}
+		}
+
+
+		//	kill players
+		for (int p = 0;	p < Players.Count;	p++) {
+			var player = Players [p];
+			if (!player.Alive)
+				continue;
+
+			var Collision = HeadCollision [p] || MapCollision [p];
+			if (!Collision)
+				continue;
+			
+			player.Alive = false;
+
+			//	erase from map
+			var PlayerTile = PopperMan.GetPlayerTile (p);
+			map.ForEachTile ((Tile, xy) => {
+				if (Tile != PlayerTile)
+					return;
+				map [xy] = PopperMan.Tile.Floor;
+			}
+			);
+		}
+
+		//	move live players
+		for (int p = 0;	p < Players.Count;	p++) {
+			var player = Players [p];
+
+			if (player.Alive) {
+				//	burn old pos to map
+				try
+				{
+					map [player.xy] = PopperMan.GetPlayerTile (p);
+				}
+				catch{};
+				player.xy = NewPlayerHeads [p];
+			}
+		}
+
 		for ( int p=0;	p<Players.Count;	p++ )
 		{
 			var player = Players[p];
-
-			if ( player.Alive )
-			{
-				var OldPos = player.xy;
-				var NewPos = player.xy;
-				NewPos.x += PopperMan.GetDelta(player.Direction).x;
-				NewPos.y += PopperMan.GetDelta(player.Direction).y;
-
-				//	check for crash
-				bool Crash = false;
-				var MapTile = map [NewPos];
-				if (MapTile != PopperMan.Tile.Floor)
-					Crash = true;
-
-				if ( Crash )
-				{
-
-				}
-				else
-				{
-					//	burn old pos to map
-					map[OldPos] = PopperMan.GetPlayerTile(p);
-					player.xy = NewPos;
-				}
-				//	get forward pos
-				//	did we crash into map
-				//	did we crash into a player body
-				//	did we crash into a player head
-				//	move forward
-			}
-			
 			player.ClearInput ();
 		}
 	

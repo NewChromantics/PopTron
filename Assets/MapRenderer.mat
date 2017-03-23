@@ -63,7 +63,7 @@ Material:
       second: 0.48
     - first:
         name: Height
-      second: 50
+      second: 95
     - first:
         name: IdentDropShadowOffset
       second: 0.0536
@@ -72,7 +72,7 @@ Material:
       second: 0.821
     - first:
         name: Width
-      second: 50
+      second: 129
     m_Colors:
     - first:
         name: FloorColourAdd

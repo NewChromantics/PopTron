@@ -41,6 +41,7 @@ public class Player : MonoBehaviour {
 
 	public bool		Alive = false;
 
+	int LastAxisReading = 0;
 	public string	JoystickAxisName
 	{
 		get
@@ -79,16 +80,20 @@ public class Player : MonoBehaviour {
 
 	void Update()
 	{
-		//	we OR the inputs, as they're only used on a tick, we store it until
-		var Reading = Input.GetAxisRaw(JoystickAxisName);
-		if ( Reading < 0 || Input.GetKey(LeftKey) )
+		//	we OR the inputs, as they're only used on a tick, we store it until frame is done
+		var NewAxisReading = (int)Input.GetAxisRaw(JoystickAxisName);
+		bool LeftDown = (NewAxisReading < 0) && (LastAxisReading >= 0);
+		bool RightDown = (NewAxisReading > 0) && (LastAxisReading <= 0);
+		LastAxisReading = NewAxisReading;
+
+		if ( LeftDown || Input.GetKeyDown(LeftKey) )
 		{
 			if ( TickStart_Direction == PopperMan.Direction.Up )			Direction = PopperMan.Direction.Left;
 			else if ( TickStart_Direction == PopperMan.Direction.Left )	Direction = PopperMan.Direction.Down;
 			else if ( TickStart_Direction == PopperMan.Direction.Down )	Direction = PopperMan.Direction.Right;
 			else if ( TickStart_Direction == PopperMan.Direction.Right )	Direction = PopperMan.Direction.Up;
 		}
-		else if ( Reading > 0 || Input.GetKey(RightKey) )
+			else if ( RightDown || Input.GetKeyDown(RightKey) )
 		{
 			if ( TickStart_Direction == PopperMan.Direction.Up )			Direction = PopperMan.Direction.Right;
 			else if ( TickStart_Direction == PopperMan.Direction.Left )	Direction = PopperMan.Direction.Up;

@@ -45,6 +45,7 @@ public class Game : MonoBehaviour {
 
 	[Header("Game events - eg sound")]
 	public UnityEvent_Player				OnPlayerExplode;
+	public UnityEvent_Player				OnPlayerHeadbutt;
 	public UnityEngine.Events.UnityEvent	OnGameFinished;
 	public UnityEngine.Events.UnityEvent	OnGameStart;
 	public UnityEngine.Events.UnityEvent	OnTickEnd;
@@ -162,7 +163,10 @@ public class Game : MonoBehaviour {
 			
 			player.Alive = false;
 
-			OnPlayerExplode.Invoke (player);
+			if (HeadCollision [p])
+				OnPlayerHeadbutt.Invoke (player);
+			else
+				OnPlayerExplode.Invoke (player);
 
 			//	erase from map
 			var PlayerTile = PopperMan.GetPlayerTile (p);

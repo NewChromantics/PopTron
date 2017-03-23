@@ -164,6 +164,22 @@ public class Render : MonoBehaviour {
 			SetMapTile( xy, Tile );
 		}
 		);
+
+		{
+			var xy = new int2 (0, 0);
+			for (xy.y = 0;	xy.y < map.Height;	xy.y++) {
+				for (xy.x = 0;	xy.x < map.Width;	xy.x++) {
+					SetGameTile (xy, PopperMan.Tile.None);
+				}
+			}
+
+			foreach (var Player in game.Players) {
+				var PlayerIndex = game.Players.IndexOf (Player);
+				var GameTile = PopperMan.GetPlayerTile (PlayerIndex);
+				SetGameTile (Player.xy, GameTile);
+			}
+		}
+
 		/*
 		ForEachTile
 		for ( int i=0;	i<map.Width*map.Height;	i++ )

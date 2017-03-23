@@ -83,6 +83,8 @@ public class Player : MonoBehaviour {
 
 	void Start()
 	{
+		//	avoid first erroneous change-dir detection
+		TickStart_Direction = Direction;
 	}
 
 	void Update()

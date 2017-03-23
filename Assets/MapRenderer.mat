@@ -71,6 +71,12 @@ Material:
         name: PlayerRadius
       second: 0.821
     - first:
+        name: ShakeScalar
+      second: 0.215
+    - first:
+        name: ShakeScalarPx
+      second: 8.9
+    - first:
         name: Width
       second: 129
     m_Colors:

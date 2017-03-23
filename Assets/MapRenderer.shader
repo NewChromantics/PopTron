@@ -5,6 +5,7 @@
 		FrameDelta("FrameDelta", Range(0,1) ) = 0
 		Width("Width",Range(1,100) ) = 20
 		Height("Height",Range(1,100) ) = 20
+		ShakeScalarPx("ShakeScalarPx", Range(0,100) ) = 1
 
 		TileColour_Floor("TileColour_Floor",COLOR) = (0,0,0,1)
 		TileColour_Wall("TileColour_Wall",COLOR) = (1,1,1,1)
@@ -15,6 +16,7 @@
 
 		MapTiles("MapTiles", 2D ) = "black"
 		GameTiles("GameTiles", 2D ) = "black"
+
 	}
 	SubShader
 	{
@@ -64,6 +66,9 @@
 			int Height;
 			float FrameDelta;
 			float Frame;
+			float2 ShakeOffset;
+			float ShakeScalarPx;
+
 
 		#define MAX_PLAYERS	4
 
@@ -189,11 +194,19 @@
 				return tex2D( GameTiles, TileUv ).x * 255.0f;
 			}
 
+			float4 GetBackgroundColour(float2 uv)
+			{
+				return float4(0,0,0,1);
+			}
+
 			fixed4 frag (v2f Frag) : SV_Target
 			{
-				float2 uv = Frag.uv * float2(Width,Height);
+				float2 ShakeOffsetUv = ShakeScalarPx * MapTiles_TexelSize.xy * ShakeOffset;
+				float2 uv = (Frag.uv+ShakeOffsetUv) * float2(Width,Height);
 				int x = floor( uv.x );
 				int y = floor( uv.y );
+				if ( x < 0 || x >= Width || y < 0 || y >= Height )
+					return GetBackgroundColour( uv );
 				uv = frac(uv);
 				int i = x + (y*Width);
 

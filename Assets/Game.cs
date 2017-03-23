@@ -46,9 +46,10 @@ public class Game : MonoBehaviour {
 	[Header("Game events - eg sound")]
 	public UnityEvent_Player				OnPlayerExplode;
 	public UnityEvent_Player				OnPlayerHeadbutt;
-	public UnityEngine.Events.UnityEvent	OnGameFinished;
 	public UnityEngine.Events.UnityEvent	OnGameStart;
 	public UnityEngine.Events.UnityEvent	OnTickEnd;
+	public UnityEvent_Player				OnGameWin;
+	public UnityEngine.Events.UnityEvent	OnGameDraw;
 
 
 	
@@ -193,12 +194,28 @@ public class Game : MonoBehaviour {
 			}
 		}
 
-		for ( int p=0;	p<Players.Count;	p++ )
+		//	detect end of game
 		{
-			var player = Players[p];
-			player.ClearInput ();
+			int AliveCount = 0;
+			int AlivePlayer = -1;
+
+			for (int p = 0;	p < Players.Count;	p++) {
+				var player = Players [p];
+				player.ClearInput ();
+			
+				if (player.Alive) {
+					AliveCount++;
+					AlivePlayer = p;
+				}
+			}
+
+			if (AliveCount == 0) {
+				OnGameDraw.Invoke ();
+			} else if (AliveCount == 1) {
+				OnGameWin.Invoke (Players [AlivePlayer]);
+			}
 		}
-	
+
 		OnTickEnd.Invoke ();
 	}
 }

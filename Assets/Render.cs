@@ -27,9 +27,25 @@ public class Render : MonoBehaviour {
 	public Texture2D			_GameTiles;
 
 
+	[Range(0,10)]
+	public float				ShakeDurationSecs = 3;
+	public AnimationCurve		ExplodeShakeX;
+	public AnimationCurve		ExplodeShakeY;
 
-
-
+	[InspectorButton("ShakeScreen")]
+	public bool		_ShakeScreen;
+	float			ShakeStartTime = -1;
+	float			ShakeTime {
+		get {
+			if (ShakeStartTime < 0)
+				return 0;
+			
+			if (!Application.isPlaying) {
+				return Mathf.Clamp01 (ShakeStartTime / ShakeDurationSecs);
+			}
+			return Mathf.Clamp01 ((Time.time - ShakeStartTime) / ShakeDurationSecs);
+		}
+	}
 
 
 
@@ -52,7 +68,31 @@ public class Render : MonoBehaviour {
 		UpdateMapShader();
 	}
 
+	void EditorUpdateShake()
+	{
+		if (!Application.isPlaying) {
+			ShakeStartTime += 1.0f / 60;
+			if (ShakeTime < 1) {
+				Debug.Log ("ShakeTime = " + ShakeTime );
+				UpdateMapShader ();
+			}
+		}
+	}
 
+	public void ShakeScreen()
+	{
+		if (!Application.isPlaying) 
+		{
+			Debug.Log ("Reset shake");
+			ShakeStartTime = 0;
+			//	force editor to update every N ms
+			UnityEditor.EditorApplication.update += EditorUpdateShake;
+		}
+		else 
+		{
+			ShakeStartTime = Time.time;
+		}
+	}
 
 
 	static Texture2D		ResizeTexture(Texture2D OldTexture,int Width,int Height)
@@ -218,7 +258,10 @@ public class Render : MonoBehaviour {
 		MapShader.SetTexture("MapTiles", _MapTiles );
 		MapShader.SetTexture("GameTiles", _GameTiles );
 		MapShader.SetFloatArray("PlayerDirs", PlayerDirs );
-		
+
+		var ShakeOffset = new Vector4 (ExplodeShakeX.Evaluate (ShakeTime), ExplodeShakeX.Evaluate (ShakeTime), 0, 0);
+		MapShader.SetVector ("ShakeOffset", ShakeOffset);
+
 		if (!Application.isPlaying) {
 			UnityEditor.SceneView.RepaintAll ();
 		}

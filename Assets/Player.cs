@@ -19,10 +19,10 @@ public class Player : MonoBehaviour {
 	public PopperMan.Direction	Direction = PopperMan.Direction.Up;
 	public PopperMan.Direction	TickStart_Direction = PopperMan.Direction.Up;
 
-	[Range(0,40)]
+	[Range(0,200)]
 	public int		x = 1;
 
-	[Range(0,40)]
+	[Range(0,200)]
 	public int		y = 1;
 
 	public int2 xy

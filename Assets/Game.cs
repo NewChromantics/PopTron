@@ -44,13 +44,11 @@ public class Game : MonoBehaviour {
 	}
 
 	[Header("Game events - eg sound")]
-	public UnityEvent_Player				OnPlayerDeathExplode;
-	public UnityEvent_Player				OnPlayerJoin;
+	public UnityEvent_Player				OnPlayerExplode;
 	public UnityEngine.Events.UnityEvent	OnGameFinished;
 	public UnityEngine.Events.UnityEvent	OnGameStart;
 	public UnityEngine.Events.UnityEvent	OnTickEnd;
-	public UnityEvent_int2					OnWallDestroyed;
-	
+
 
 	
 	private void Update()

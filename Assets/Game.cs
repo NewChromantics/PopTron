@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[System.Serializable]
-public class UnityEvent_Bomb : UnityEngine.Events.UnityEvent <Game.Bomb> {}
 
 [System.Serializable]
 public class UnityEvent_Player : UnityEngine.Events.UnityEvent <Player> {}
@@ -16,19 +14,7 @@ public class UnityEvent_int2 : UnityEngine.Events.UnityEvent <int2> {}
 
 public class Game : MonoBehaviour {
 
-	public class Bomb
-	{
-		public int		x {	get {return xy.x; } }
-		public int		y {	get {return xy.y; } }
-		public int2		xy;
-		public int		StartFrame;
-		public int		Duration;
-		public Player	Player;
-		public int		Radius;
-
-		//	store flames upon explosion for anim
-		public List<int2>	Flames = new List<int2>();
-	};
+	public string	ResetButtonName = "Start";
 
 	[InspectorButton("Tick")]
 	public bool	_Tick;
@@ -47,7 +33,6 @@ public class Game : MonoBehaviour {
 
 
 	public List<Player>	_Players;
-	public List<Bomb>	Bombs = new List<Bomb>();
 	public List<Player>	Players
 	{
 		get
@@ -59,8 +44,6 @@ public class Game : MonoBehaviour {
 	}
 
 	[Header("Game events - eg sound")]
-	public UnityEvent_Bomb					OnBombPlaced;
-	public UnityEvent_Bomb					OnBombExplode;
 	public UnityEvent_Player				OnPlayerDeathExplode;
 	public UnityEvent_Player				OnPlayerJoin;
 	public UnityEngine.Events.UnityEvent	OnGameFinished;
@@ -72,6 +55,12 @@ public class Game : MonoBehaviour {
 	
 	private void Update()
 	{
+		if (Input.GetButtonDown (ResetButtonName)) {
+			var ThisScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene ();
+			UnityEngine.SceneManagement.SceneManager.LoadScene (ThisScene.name);
+			return;
+		}
+		
 		TickCountdown -= Time.deltaTime;
 		if ( TickCountdown < 0 )
 		{

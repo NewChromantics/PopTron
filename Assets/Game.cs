@@ -162,6 +162,8 @@ public class Game : MonoBehaviour {
 			
 			player.Alive = false;
 
+			OnPlayerExplode.Invoke (player);
+
 			//	erase from map
 			var PlayerTile = PopperMan.GetPlayerTile (p);
 			map.ForEachTile ((Tile, xy) => {

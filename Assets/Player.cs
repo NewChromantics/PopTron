@@ -19,6 +19,8 @@ public class Player : MonoBehaviour {
 	public PopperMan.Direction	Direction = PopperMan.Direction.Up;
 	public PopperMan.Direction	TickStart_Direction = PopperMan.Direction.Up;
 
+	public UnityEngine.Events.UnityEvent	OnPlayerChangedDir;
+
 	[Range(0,200)]
 	public int		x = 1;
 
@@ -61,6 +63,11 @@ public class Player : MonoBehaviour {
 
 	public void ClearInput()
 	{
+		if (Alive) {
+			if (Direction != TickStart_Direction)
+				OnPlayerChangedDir.Invoke ();
+		}
+
 		TickStart_Direction = Direction;
 		/*
 		//	work out if we let-go in a frame

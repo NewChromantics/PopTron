@@ -11,9 +11,21 @@ public class UnityEvent_Player : UnityEngine.Events.UnityEvent <Player> {}
 [System.Serializable]
 public class UnityEvent_int2 : UnityEngine.Events.UnityEvent <int2> {}
 
+[System.Serializable]
+public class UnityEvent_int : UnityEngine.Events.UnityEvent <int> {}
+
 
 public class Game : MonoBehaviour {
 
+	enum GameState
+	{
+		Countdown,
+		Play,
+		EndOfGame,
+		Reboot,
+	};
+
+	GameState		State = GameState.Countdown;
 	public string	ResetButtonName = "Start";
 
 	[InspectorButton("Tick")]
@@ -51,25 +63,95 @@ public class Game : MonoBehaviour {
 	public UnityEvent_Player				OnGameWin;
 	public UnityEngine.Events.UnityEvent	OnGameDraw;
 
+	[Header("Countdown")]
+	[Range(0,30)]
+	public int								StartGameCountdownTime = 10;
+	[Range(0,30)]
+	public int								EndGameCountdownTime = 15;
+	public UnityEvent_int					OnCountdown;
+	public UnityEngine.Events.UnityEvent	OnCountdownFinished;
 
-	
-	private void Update()
+
+
+	GameState UpdateState_Play()
 	{
-		if (Input.GetButtonDown (ResetButtonName)) {
-			var ThisScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene ();
-			UnityEngine.SceneManagement.SceneManager.LoadScene (ThisScene.name);
-			return;
-		}
-		
 		TickCountdown -= Time.deltaTime;
 		if ( TickCountdown < 0 )
 		{
 			Tick();
 			TickCountdown = TickSecs;
 		}
+		return State;
 	}
 
-	
+
+	GameState UpdateState_Reboot()
+	{
+		var ThisScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene ();
+		UnityEngine.SceneManagement.SceneManager.LoadScene (ThisScene.name);
+		return GameState.Reboot;
+	}
+
+	GameState UpdateState_Countdown()
+	{
+		int Total = StartGameCountdownTime;
+		int LastCountdown = Total - (int)TickCountdown;
+		TickCountdown += Time.deltaTime;
+		int Countdown = Total - (int)TickCountdown;
+
+		if (TickCountdown >= Total) {
+			OnCountdownFinished.Invoke ();
+			TickCountdown = 0;
+			return GameState.Play;
+		}
+
+		if ( Countdown != LastCountdown )
+			OnCountdown.Invoke (Countdown);
+		
+		return GameState.Countdown;
+	}
+
+	GameState UpdateState_EndOfGame()
+	{
+		int Total = EndGameCountdownTime;
+		int LastCountdown = Total - (int)TickCountdown;
+		TickCountdown += Time.deltaTime;
+		int Countdown = Total - (int)TickCountdown;
+
+		if (TickCountdown >= Total) {
+			return GameState.Reboot;
+		}
+
+
+		return GameState.EndOfGame;
+	}
+
+	private void Update()
+	{
+		if (Input.GetButtonDown (ResetButtonName)) {
+			EndGame_Draw ();
+		}
+
+		switch (State) {
+		case GameState.Countdown:	State = UpdateState_Countdown ();		break;
+		case GameState.Play:		State = UpdateState_Play ();			break;
+		case GameState.EndOfGame:	State = UpdateState_EndOfGame ();		break;
+		case GameState.Reboot:		State = UpdateState_Reboot ();			break;
+		}			
+	}
+
+	void EndGame_Draw()
+	{
+		OnGameDraw.Invoke();
+		State = GameState.EndOfGame;
+	}
+
+	void EndGame_Win(Player Winner)
+	{
+		OnGameWin.Invoke(Winner);
+		State = GameState.EndOfGame;
+	}
+
 	public Player GetPlayerAt(int2 xy)
 	{
 		foreach (var Player in Players) {
@@ -210,9 +292,9 @@ public class Game : MonoBehaviour {
 			}
 
 			if (AliveCount == 0) {
-				OnGameDraw.Invoke ();
+				EndGame_Draw ();
 			} else if (AliveCount == 1) {
-				OnGameWin.Invoke (Players [AlivePlayer]);
+				EndGame_Win(Players [AlivePlayer]);
 			}
 		}
 

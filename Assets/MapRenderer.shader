@@ -52,6 +52,7 @@
 		#define TILE_PLAYER1	4
 		#define TILE_PLAYER2	5
 		#define TILE_PLAYER3	6
+		#define TILE_COUNT		7
 
 		#define TileColour_Invalid float4(0,0,1,0)
 		#define TileColour_None float4(0,1,0,0)
@@ -96,18 +97,21 @@
 
 			float4 GetMapTileColour(int2 Tilexy,float2 Tileuv,int Tile)
 			{
-				switch( Tile )
-				{
-					default:
-					case TILE_INVALID:		return TileColour_Invalid;
-					case TILE_NONE:			return TileColour_None;
-					case TILE_FLOOR:		return TileColour_Floor;
-					case TILE_WALL:			return TileColour_Wall;
-					case TILE_PLAYER0:		return TileColour_Player0;
-					case TILE_PLAYER1:		return TileColour_Player1;
-					case TILE_PLAYER2:		return TileColour_Player2;
-					case TILE_PLAYER3:		return TileColour_Player3;
-				}
+				//	gr: switch not supported on "es 2" (whichever shader version that is)
+				float4 TileColour_x[TILE_COUNT+1];
+				TileColour_x[TILE_NONE]		= TileColour_None;
+				TileColour_x[TILE_FLOOR]	= TileColour_Floor;
+				TileColour_x[TILE_WALL]		= TileColour_Wall;
+				TileColour_x[TILE_PLAYER0]	= TileColour_Player0;
+				TileColour_x[TILE_PLAYER1]	= TileColour_Player1;
+				TileColour_x[TILE_PLAYER2]	= TileColour_Player2;
+				TileColour_x[TILE_PLAYER3]	= TileColour_Player3;
+				TileColour_x[TILE_COUNT]	= TileColour_Invalid;
+
+				if ( Tile < 0 || Tile >= TILE_COUNT )
+					Tile = TILE_COUNT;
+
+				return TileColour_x[Tile];
 			}
 
 			float GetArrowUpMask(float2 uv)
@@ -149,31 +153,35 @@
 			float4 GetArrowColour(float2 uv,float4 Colour,int Direction)
 			{
 				float Mask = 0;
-				switch ( Direction )
+				if ( Direction == DIR_UP )			Mask = GetArrowUpMask( uv );
+				else if ( Direction == DIR_DOWN )	Mask = GetArrowDownMask( uv );
+				else if ( Direction == DIR_LEFT )	Mask = GetArrowLeftMask( uv );
+				else if ( Direction == DIR_RIGHT )	Mask = GetArrowRightMask( uv );
+				else
 				{
-					case DIR_UP:	Mask = GetArrowUpMask( uv );	break;
-					case DIR_DOWN:	Mask = GetArrowDownMask( uv );	break;
-					case DIR_LEFT:	Mask = GetArrowLeftMask( uv );	break;
-					case DIR_RIGHT:	Mask = GetArrowRightMask( uv );	break;
-					default:		Mask = GetCircleMask( uv, 0.5f );	break;
+					Mask = GetCircleMask( uv, 0.5f );
 				}
 				return lerp( TileColour_Invalid, Colour, Mask );
 			}
 
 			float4 GetGameTileColour(int2 Tilexy,float2 Tileuv,int Tile)
 			{
-				switch( Tile )
-				{
-					default:
-					case TILE_INVALID:		return TileColour_Invalid;
-					case TILE_NONE:			return TileColour_None;
-					case TILE_FLOOR:		return TileColour_Floor;
-					case TILE_WALL:			return TileColour_Wall;
-					case TILE_PLAYER0:		return GetArrowColour( Tileuv, TileColour_Player0, PlayerDirs[0] );
-					case TILE_PLAYER1:		return GetArrowColour( Tileuv, TileColour_Player1, PlayerDirs[1] );
-					case TILE_PLAYER2:		return GetArrowColour( Tileuv, TileColour_Player2, PlayerDirs[2] );
-					case TILE_PLAYER3:		return GetArrowColour( Tileuv, TileColour_Player3, PlayerDirs[3] );
-				}
+				//	gr: switch not supported on "es 2" (whichever shader version that is)
+				float4 TileColour_x[TILE_COUNT+1];
+				TileColour_x[TILE_NONE]		= TileColour_None;
+				TileColour_x[TILE_FLOOR]	= TileColour_Floor;
+				TileColour_x[TILE_WALL]		= TileColour_Wall;
+				TileColour_x[TILE_PLAYER0]	= GetArrowColour( Tileuv, TileColour_Player0, PlayerDirs[0] );
+				TileColour_x[TILE_PLAYER1]	= GetArrowColour( Tileuv, TileColour_Player1, PlayerDirs[1] );
+				TileColour_x[TILE_PLAYER2]	= GetArrowColour( Tileuv, TileColour_Player2, PlayerDirs[2] );
+				TileColour_x[TILE_PLAYER3]	= GetArrowColour( Tileuv, TileColour_Player3, PlayerDirs[3] );
+				TileColour_x[TILE_COUNT]	= TileColour_Invalid;
+
+				if ( Tile < 0 || Tile >= TILE_COUNT )
+					Tile = TILE_COUNT;
+
+				return TileColour_x[Tile];
+			
 			}
 
 			float3 BlendColour(float3 Bottom,float4 Top,float AlphaMult)

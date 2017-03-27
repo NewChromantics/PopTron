@@ -81,6 +81,7 @@ public class Render : MonoBehaviour {
 
 	public void ShakeScreen()
 	{
+		#if UNITY_EDITOR
 		if (!Application.isPlaying) 
 		{
 			Debug.Log ("Reset shake");
@@ -89,6 +90,7 @@ public class Render : MonoBehaviour {
 			UnityEditor.EditorApplication.update += EditorUpdateShake;
 		}
 		else 
+		#endif
 		{
 			ShakeStartTime = Time.time;
 		}
@@ -262,8 +264,12 @@ public class Render : MonoBehaviour {
 		var ShakeOffset = new Vector4 (ExplodeShakeX.Evaluate (ShakeTime), ExplodeShakeX.Evaluate (ShakeTime), 0, 0);
 		MapShader.SetVector ("ShakeOffset", ShakeOffset);
 
-		if (!Application.isPlaying) {
-			UnityEditor.SceneView.RepaintAll ();
+		#if UNITY_EDITOR
+		{
+			if (!Application.isPlaying) {
+				UnityEditor.SceneView.RepaintAll ();
+			}
 		}
+		#endif
 	}
 }
